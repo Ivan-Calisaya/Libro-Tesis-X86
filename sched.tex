@@ -541,7 +541,7 @@ If there were only one producer thread and one consumer thread,
 and they executed on different CPUs,
 and the compiler didn't optimize too aggressively,
 this implementation would be correct:
-\begin{lstlisting}[numbers=left,firstnumber=100]
+\begin{minted}[linenos,firstnumber=100]{c}
   struct semaphore {
     struct spinlock lock;
     int count;
@@ -564,7 +564,7 @@ this implementation would be correct:
      s->count -= 1;
      release(&s->lock);
   }
-\end{lstlisting}
+\end{minted}
 
 The implementation above 
 is expensive.  If the producer acts
@@ -612,7 +612,7 @@ We can change the semaphore implementation to use
 \lstinline{sleep}
 and
 \lstinline{wakeup} (changes highlighted in yellow):
-\begin{lstlisting}[numbers=left,firstnumber=200]
+\begin{minted}[linenos,firstnumber=200]{c}
   void
   V(struct semaphore *s)
   {
@@ -631,7 +631,7 @@ and
     s->count -= 1;
     release(&s->lock);
   }
-\end{lstlisting}
+\end{minted}
 
 % \begin{figure}[t]
 % \center
@@ -697,7 +697,7 @@ move the lock acquisition (highlighted in yellow below) in
 \lstinline{P}
 so that its check of the count and its call to \lstinline{sleep}
 are atomic:
-\begin{lstlisting}[numbers=left,firstnumber=300]
+\begin{minted}[linenos,firstnumber=300]{c}
   void
   V(struct semaphore *s)
   {
@@ -716,7 +716,7 @@ are atomic:
     s->count -= 1;
     release(&s->lock);
   }
-\end{lstlisting}
+\end{minted}
 One might hope that this version of
 \lstinline{P}
 would avoid the lost wakeup because the lock prevents
@@ -746,7 +746,7 @@ Once the consumer is awake again
 reacquires the lock before returning.
 Our new correct sleep/wakeup scheme is usable as follows (change
 highlighted in yellow):
-\begin{lstlisting}[numbers=left,firstnumber=400]
+\begin{minted}[linenos,firstnumber=400]{c}
   void
   V(struct semaphore *s)
   {
@@ -765,7 +765,7 @@ highlighted in yellow):
     s->count -= 1;
     release(&s->lock);
   }
-\end{lstlisting}
+\end{minted}
 
 The fact that
 \lstinline{P}
@@ -1543,17 +1543,17 @@ to avoid a deadlock
 \linerefs{kernel/proc.c:/DOC: sleeplock0/,/^..}/}.
 Suppose the special case were eliminated by
 replacing
-\begin{lstlisting}[]
+\begin{minted}{c}
 if(lk != &p->lock){
   acquire(&p->lock);
   release(lk);
 }
-\end{lstlisting}
+\end{minted}
 with
-\begin{lstlisting}[]
+\begin{minted}{c}
 release(lk);
 acquire(&p->lock);
-\end{lstlisting}
+\end{minted}
 Doing this would break
 \lstinline{sleep}.
 How?

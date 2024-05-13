@@ -454,7 +454,7 @@ fit in the space remaining in the log.
 \section{Code: logging}
 
 A typical use of the log in a system call looks like this:
-\begin{lstlisting}[]
+\begin{minted}{c}
   begin_op();
   ...
   bp = bread(...);
@@ -462,7 +462,7 @@ A typical use of the log in a system call looks like this:
   log_write(bp);
   ...
   end_op();
-\end{lstlisting}
+\end{minted}
 
 \indexcode{begin_op}
 \lineref{kernel/log.c:/^begin.op/}
@@ -552,13 +552,13 @@ An example use of the log occurs in
 \indexcode{filewrite}
 \lineref{kernel/file.c:/^filewrite/}.
 The transaction looks like this:
-\begin{lstlisting}[]
+\begin{minted}{c}
       begin_op();
       ilock(f->ip);
       r = writei(f->ip, ...);
       iunlock(f->ip);
       end_op();
-\end{lstlisting}
+\end{minted}
 This code is wrapped in a loop that breaks up large writes into individual
 transactions of just a few sectors at a time, to avoid overflowing
 the log.  The call to

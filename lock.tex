@@ -101,7 +101,7 @@ multiprocessor systems behave as if there were a single, shared memory.)
 If there were no concurrent
 requests, you might implement a list \lstinline{push} operation as
 follows:
-\begin{lstlisting}[numbers=left,firstnumber=1]
+\begin{minted}[linenos,firstnumber=1]{c}
     struct element {
       int data;
       struct element *next;
@@ -119,7 +119,7 @@ follows:
       l->next = list; (*@\label{line:next}@*)
       list = l;  (*@\label{line:list}@*)
    }
-\end{lstlisting}
+\end{minted}
 
 \begin{figure}[t]
 \center
@@ -175,7 +175,7 @@ the sensitive lines of
 this makes the scenario above impossible.
 The correctly locked version of the above code
 adds just a few lines (highlighted in yellow):
-\begin{lstlisting}[numbers=left,firstnumber=6]
+\begin{minted}[linenos,firstnumber=6]{c}
    struct element *list = 0;
    (*@\hl{struct lock listlock;}@*)
     	
@@ -191,7 +191,7 @@ adds just a few lines (highlighted in yellow):
      list = l;           (*@\label{line:list1}@*)
      (*@\hl{release(\&listlock)}; @*)
    }
-\end{lstlisting}
+\end{minted}
 The sequence of instructions between
 \lstinline{acquire}
 and
@@ -291,7 +291,7 @@ The important field in the structure is
 a word that is zero when the lock is available
 and non-zero when it is held.
 Logically, xv6 should acquire a lock by executing code like
-\begin{lstlisting}[numbers=left,firstnumber=21]
+\begin{minted}[linenos,firstnumber=21]{c}
    void
    acquire(struct spinlock *lk) // does not work!
    {
@@ -302,7 +302,7 @@ Logically, xv6 should acquire a lock by executing code like
        }
      }
    }
-\end{lstlisting}
+\end{minted}
 Unfortunately, this implementation does not
 guarantee mutual exclusion on a multiprocessor.
 It could happen that two CPUs simultaneously
@@ -569,7 +569,7 @@ cause critical sections to be atomic with respect to other critical
 sections.  Consider the following two functions \lstinline{f} and
 \lstinline{g}:
 
-\begin{lstlisting}
+\begin{minted}{c}
 struct spinlock lock;
 int data = 0; // protected by lock
 
@@ -591,7 +591,7 @@ g() {
   }
   release(&lock);
 }
-\end{lstlisting}
+\end{minted}
 
 Looking at this code fragment, the intuition is that
 \lstinline{call_once} will be called
@@ -743,14 +743,14 @@ store corresponding to
 line~\ref{line:next2} to a point after the
 \lstinline{release}
 on line~\ref{line:release}:
-\begin{lstlisting}[numbers=left,firstnumber=1]
+\begin{minted}[linenos,firstnumber=1]{c}
       l = malloc(sizeof *l);
       l->data = data;
       acquire(&listlock);
       l->next = list;   (*@\label{line:next2}@*)
       list = l;      
       release(&listlock);  (*@\label{line:release}@*)
-\end{lstlisting}
+\end{minted}
 If such a re-ordering occurred, there would be a window during
 which another CPU could acquire the lock and
 observe the updated

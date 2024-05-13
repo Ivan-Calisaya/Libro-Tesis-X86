@@ -1,6 +1,8 @@
 \documentclass[12pt]{book}
 \usepackage[T1]{fontenc}
-\usepackage{times}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{sourcecodepro}
 \usepackage{listings}
 \usepackage{graphicx}
 \usepackage{xcolor}
@@ -8,11 +10,11 @@
 % \usepackage{showidx}
 \usepackage{imakeidx}
 \usepackage{booktabs}
-\usepackage{url}
 \usepackage{etoolbox}  % for showidx
 \usepackage{fullpage}
 \usepackage{soul}
 \usepackage[utf8]{inputenc}
+\usepackage{minted}
 
 \usepackage{hyperref}  % should be last
 
@@ -20,18 +22,30 @@
 \frenchspacing
 
 \hypersetup{pdfauthor={Russ Cox, Frans Kaashoek, Robert Morris},
-            pdftitle={xv6: a simple, Unix-like teaching operating system},}
-  
-\lstset{basicstyle=\small\ttfamily}
+            pdftitle={xv6: a simple, Unix-like teaching operating system},
+            colorlinks=true,
+            linkcolor=blue,
+            filecolor=magenta,
+            urlcolor=cyan,}
+\urlstyle{same}
+
+
+\lstset{basicstyle=\normalsize\ttfamily}
 \lstset{morecomment=[is]{[[[}{]]]}}
 \lstset{escapeinside={(*@}{@*)}}
 \lstset{xleftmargin=5.0ex}
+\setminted{
+  fontsize=\normalsize,
+  fontfamily=tt
+}
+\setmintedinline{fontsize=\normalsize}
+\usemintedstyle{vs}
 
-\newcommand{\github}{https://github.com/mit-pdos/xv6-riscv/blob/riscv/}
+\newcommand{\github}{https://github.com/mit-pdos/xv6-riscv/blob/riscv}
 
-\newcommand{\fileref}[1]{\href{\github/#1}{\small{(#1)}}}
-\newcommand{\lineref}[2]{\href{\github/#1\#L#2}{\small{(#1:#2)}}}
-\newcommand{\linerefs}[3]{\href{\github/#1\#L#2-L#3}{\small(#1:#2-#3)}}
+\newcommand{\fileref}[1]{\href{\github/#1}{\normalsize{(#1)}}}
+\renewcommand{\lineref}[2]{\href{\github/#1\#L#2}{\normalsize{(#1:#2)}}}
+\newcommand{\linerefs}[3]{\href{\github/#1\#L#2-L#3}{\normalsize(#1:#2-#3)}}
 
 \newcommand{\indextext}[1]{\textit{#1}\index{#1}}
 \newcommand{\indextextx}[1]{{#1}\index{#1}}
@@ -69,11 +83,11 @@
 \input{latex.out/sum}
 
 {
-% The following prevents latex from splitting a bibliography entry with a page
+% The following prevents LaTeX from splitting a bibliography entry with a page
 % break
 \interlinepenalty=10000
 % Since we're using natbib in numbers mode, we don't need plainnat,
-% which exists to feed authors and years back in to natbib.  As a
+% which exists to feed authors and years back into natbib. As a
 % result, it complains about entries without years, which we don't
 % care about.
 %\bibliographystyle{plainnat}
