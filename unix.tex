@@ -132,6 +132,7 @@ with each process.
 
 \begin{figure}[t]
 \center
+\small
 \begin{tabular}{ll}
 {\bf System call} & {\bf Description} \\
 \midrule
@@ -181,7 +182,7 @@ and
 
 For example, consider the following program fragment written in the C
 programming language~\cite{kernighan}:
-\begin{lstlisting}[]
+\begin{minted}{c}
 int pid = fork();
 if(pid > 0){
   printf("parent: child=%d\n", pid);
@@ -193,7 +194,7 @@ if(pid > 0){
 } else {
   printf("fork error\n");
 }
-\end{lstlisting}
+\end{minted}
 The
 \indexcode{exit}
 system call causes the calling process to stop executing and
@@ -263,7 +264,7 @@ executing at the entry point declared in the ELF header.
 takes two arguments: the name of the file containing the
 executable and an array of string arguments.
 For example:
-\begin{lstlisting}[]
+\begin{minted}{c}
 char *argv[3];
 
 argv[0] = "echo";
@@ -271,7 +272,7 @@ argv[1] = "hello";
 argv[2] = 0;
 exec("/bin/echo", argv);
 printf("exec error\n");
-\end{lstlisting}
+\end{minted}
 This fragment replaces the calling program with an instance
 of the program 
 \lstinline{/bin/echo}
@@ -443,7 +444,7 @@ The following program fragment (which forms the essence of the program
 copies data from its standard input
 to its standard output.  If an error occurs, it writes a message
 to the standard error.
-\begin{lstlisting}[]
+\begin{minted}{c}
 char buf[512];
 int n;
 
@@ -460,7 +461,7 @@ for(;;){
     exit(1);
   }
 }
-\end{lstlisting}
+\end{minted}
 The important thing to note in the code fragment is that
 \lstinline{cat}
 doesn't know whether it is reading from a file, console, or a pipe.
@@ -501,10 +502,8 @@ re-opening chosen file descriptors in the child,
 and then calling \lstinline{exec} to run the new program.
 Here is a simplified version of the code a shell runs for the
 command
-\lstinline{cat}
-\lstinline{<}
-\lstinline{input.txt}:
-\begin{lstlisting}[]
+\mintinline{bash}{cat < input.txt}
+\begin{minted}{c}
 char *argv[2];
 
 argv[0] = "cat";
@@ -514,7 +513,7 @@ if(fork() == 0) {
   open("input.txt", O_RDONLY);
   exec("cat", argv);
 }
-\end{lstlisting}
+\end{minted}
 After the child closes file descriptor 0,
 \lstinline{open}
 is guaranteed to use that file descriptor
@@ -575,7 +574,7 @@ Although
 copies the file descriptor table, each underlying file offset is shared
 between parent and child.
 Consider this example:
-\begin{lstlisting}[]
+\begin{minted}{c}
 if(fork() == 0) {
   write(1, "hello ", 6);
   exit(0);
@@ -583,7 +582,7 @@ if(fork() == 0) {
   wait(0);
   write(1, "world\n", 6);
 }
-\end{lstlisting}
+\end{minted}
 At the end of this fragment, the file attached to file descriptor 1
 will contain the data
 \lstinline{hello}
@@ -617,11 +616,11 @@ This is another way to write
 \lstinline{hello}
 \lstinline{world}
 into a file:
-\begin{lstlisting}[]
+\begin{minted}{c}
 fd = dup(1);
 write(1, "hello ", 6);
 write(fd, "world\n", 6);
-\end{lstlisting}
+\end{minted}
 
 Two file descriptors share an offset if they were derived from
 the same original file descriptor by a sequence of
@@ -672,7 +671,7 @@ The following example code runs the program
 \lstinline{wc}
 with standard input connected to
 the read end of a pipe.
-\begin{lstlisting}[]
+\begin{minted}{c}
 int p[2];
 char *argv[2];
 
@@ -691,7 +690,7 @@ if(fork() == 0) {
   write(p[1], "hello world\n", 12);
   close(p[1]);
 }
-\end{lstlisting}
+\end{minted}
 The program calls
 \lstinline{pipe},
 which creates a new pipe and records the read and write
@@ -785,13 +784,13 @@ children complete.
 
 Pipes may seem no more powerful than temporary files:
 the pipeline
-\begin{lstlisting}[]
+\begin{minted}{bash}
 echo hello world | wc
-\end{lstlisting}
+\end{minted}
 could be implemented without pipes as
-\begin{lstlisting}[]
+\begin{minted}{bash}
 echo hello world >/tmp/xyz; wc </tmp/xyz
-\end{lstlisting}
+\end{minted}
 Pipes have at least three advantages over temporary files
 in this situation.
 First, pipes automatically clean themselves up;
@@ -841,13 +840,13 @@ which can be changed with the
 system call.
 Both these code fragments open the same file
 (assuming all the directories involved exist):
-\begin{lstlisting}[]
+\begin{minted}{c}
 chdir("/a");
 chdir("b");
 open("c", O_RDONLY);
 
 open("/a/b/c", O_RDONLY);
-\end{lstlisting}
+\end{minted}
 The first fragment changes the process's current directory to
 \lstinline{/a/b};
 the second neither refers to nor changes the process's current directory.
@@ -863,12 +862,12 @@ and
 \lstinline{mknod}
 creates a new device file.
 This example illustrates all three:
-\begin{lstlisting}[]
+\begin{minted}{c}
 mkdir("/dir");
 fd = open("/dir/file", O_CREATE|O_WRONLY);
 close(fd);
 mknod("/console", 1, 1);
-\end{lstlisting}
+\end{minted}
 \lstinline{mknod}
 creates a special file that refers to a device.
 Associated with a device file are
@@ -912,7 +911,7 @@ It fills in a
 defined in
 \lstinline{stat.h} \fileref{kernel/stat.h}
 as:
-\begin{lstlisting}[]
+\begin{minted}{c}
 #define T_DIR     1   // Directory
 #define T_FILE    2   // File
 #define T_DEVICE  3   // Device
@@ -924,7 +923,7 @@ struct stat {
   short nlink; // Number of links to file
   uint64 size; // Size of file in bytes
 };
-\end{lstlisting}
+\end{minted}
 
 The
 \lstinline{link}
@@ -934,10 +933,10 @@ This fragment creates a new file named both
 \lstinline{a}
 and
 \lstinline{b}.
-\begin{lstlisting}[]
+\begin{minted}{c}
 open("a", O_CREATE|O_WRONLY);
 link("a", "b");
-\end{lstlisting}
+\end{minted}
 Reading from or writing to
 \lstinline{a}
 is the same as reading from or writing to
@@ -966,17 +965,17 @@ The file's inode and the disk space holding its content
 are only freed when the file's link count is zero and
 no file descriptors refer to it.
 Thus adding
-\begin{lstlisting}[]
+\begin{minted}{c}
 unlink("a");
-\end{lstlisting}
+\end{minted}
 to the last code sequence leaves the inode
 and file content accessible as
 \lstinline{b}.
 Furthermore,
-\begin{lstlisting}[]
+\begin{minted}{c}
 fd = open("/tmp/xyz", O_CREATE|O_RDWR);
 unlink("/tmp/xyz");
-\end{lstlisting}
+\end{minted}
 is an idiomatic way to create a temporary inode 
 with no name
 that will be cleaned up when the process closes 
