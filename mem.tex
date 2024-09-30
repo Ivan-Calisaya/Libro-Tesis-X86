@@ -667,7 +667,7 @@ are formatted in the widely-used \indextext{ELF format}, defined in
 \indexcode{struct elfhdr} \lineref{kernel/elf.h:/^struct.elfhdr/},
 followed by a sequence of program section headers,
 \lstinline{struct proghdr} \lineref{kernel/elf.h:/^struct.proghdr/}.  Each
-\lstinline{progvhdr} describes a section of the application that must
+\lstinline{proghdr} describes a section of the application that must
 be loaded into memory; xv6 programs have two program section
 headers: one for instructions and one for data.
 
